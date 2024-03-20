@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "WAITHER",
+    "slug": "WAITHER",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "WAITHER"
+}
