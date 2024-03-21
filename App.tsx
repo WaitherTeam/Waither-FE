@@ -7,7 +7,11 @@ import {styled} from "styled-components/native";
 import waitherLogo from "./src/assets/images/waither-logo.png";
 import KakaoLogo from "./src/assets/images/Kakao-logo.png";
 import AppleLogo from "./src/assets/images/Apple-logo.png";
-import {APPLE_LOGIN_COLOR, KAKAO_LOGIN_COLOR} from "./src/styles/color";
+import {
+  APPLE_LOGIN_COLOR,
+  KAKAO_LOGIN_COLOR,
+  MAIN_COLOR,
+} from "./src/styles/color";
 
 const Wrapper = styled.View`
   flex-direction: column;
@@ -18,8 +22,8 @@ const Wrapper = styled.View`
 `;
 
 const Logo = styled.Image`
-  top: 160px;
-  position: absolute;
+  bottom: 5px;
+  position: relative;
   width: 165px;
   height: 138px;
 `;
@@ -46,7 +50,7 @@ const AppleLoginBtn = styled.TouchableOpacity`
 `;
 
 const LoginTitle = styled.Text`
-  bottom: 80px;
+  margin-bottom: 60px;
   font-size: 22px;
 `;
 
@@ -75,6 +79,56 @@ const AppleImage = styled.Image`
   margin-right: 8px;
 `;
 
+const Wrapper2 = styled.View`
+  flex-direction: row;
+  margin-top: 15px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const EmailLoginBtn = styled.TouchableOpacity``;
+
+const NotLoginBtn = styled.TouchableOpacity``;
+
+const EmailLoginText = styled.Text`
+  color: rgba(0, 0, 0, 0.5);
+`;
+
+const NotLoginText = styled.Text`
+  color: rgba(0, 0, 0, 0.5);
+`;
+
+const DivideText = styled.Text`
+  font-size: 17px;
+  padding-bottom: 3px;
+  color: rgba(0, 0, 0, 0.5);
+  margin: 0px 5px;
+`;
+
+const NotUser = styled.Text`
+  color: rgba(0, 0, 0, 0.5);
+  margin-top: 45px;
+  margin-bottom: 13px;
+`;
+
+const EmailRegister = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  background-color: transparent;
+  width: 292px;
+  height: 44px;
+  border: 1.3px;
+  border-color: ${MAIN_COLOR};
+  border-radius: 10px;
+`;
+
+const EmailRegisterText = styled.Text`
+  color: ${MAIN_COLOR};
+  font-size: 15px;
+  font-weight: 600;
+`;
+
 export default function App() {
   useEffect(() => {
     if (SplashScreen) {
@@ -93,6 +147,19 @@ export default function App() {
         <AppleImage source={AppleLogo} />
         <AppleLoginTitle>Apple로 계속하기</AppleLoginTitle>
       </AppleLoginBtn>
+      <Wrapper2>
+        <EmailLoginBtn>
+          <EmailLoginText>이메일 로그인</EmailLoginText>
+        </EmailLoginBtn>
+        <DivideText>|</DivideText>
+        <NotLoginBtn>
+          <NotLoginText>로그인 없이 계속하기</NotLoginText>
+        </NotLoginBtn>
+      </Wrapper2>
+      <NotUser>아직 회원이 아니시라면</NotUser>
+      <EmailRegister>
+        <EmailRegisterText>이메일로 회원가입</EmailRegisterText>
+      </EmailRegister>
     </Wrapper>
   );
 }
