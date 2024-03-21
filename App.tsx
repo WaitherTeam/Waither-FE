@@ -14,7 +14,7 @@ const Wrapper = styled.View`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #3d2f2f;
+  background-color: white;
   flex: 1;
 `;
 
