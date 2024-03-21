@@ -1,23 +1,20 @@
-import {StatusBar} from "expo-status-bar";
-import React, {useEffect, useState} from "react";
-import {StyleSheet, Text, View, Image} from "react-native";
-import SplashScreen from "react-native-splash-screen";
-import Login from "./src/screens/Login";
-import {styled} from "styled-components/native";
-import waitherLogo from "./src/assets/images/waither-logo.png";
-import KakaoLogo from "./src/assets/images/Kakao-logo.png";
-import AppleLogo from "./src/assets/images/Apple-logo.png";
+import React, { useEffect, useState } from 'react';
+import SplashScreen from 'react-native-splash-screen';
+import { styled } from 'styled-components/native';
+import waitherLogo from './src/assets/images/waither-logo.png';
+import KakaoLogo from './src/assets/images/Kakao-logo.png';
+import AppleLogo from './src/assets/images/Apple-logo.png';
 import {
   APPLE_LOGIN_COLOR,
   KAKAO_LOGIN_COLOR,
   MAIN_COLOR,
-} from "./src/styles/color";
-import Modal from "react-native-modal";
+} from './src/styles/color';
+import Modal from 'react-native-modal';
 const Wrapper = styled.View`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: white;
+  background-color: #3d2f2f;
   flex: 1;
 `;
 
@@ -208,15 +205,15 @@ export default function App() {
           <NotLoginText>로그인 없이 계속하기</NotLoginText>
           <Modal
             isVisible={isModalVisible}
-            animationIn={"slideInUp"}
-            animationOut={"bounceOutUp"}
+            animationIn={'slideInUp'}
+            animationOut={'bounceOutUp'}
             animationOutTiming={600}
             useNativeDriver={true}
             hideModalContentWhileAnimating={true}
           >
             <LoginPopup>
               <LoginPopupText>
-                로그인을 하지 않으면 {"\n"} 데이터가 저장되지 않아요!
+                로그인을 하지 않으면 {'\n'} 데이터가 저장되지 않아요!
               </LoginPopupText>
               <PopupBtnWrapper>
                 <LoginPopupBackBtn onPress={withOutLoginOnPress}>
