@@ -12,7 +12,7 @@ import {
   KAKAO_LOGIN_COLOR,
   MAIN_COLOR,
 } from "./src/styles/color";
-
+import Modal from "react-native-modal";
 const Wrapper = styled.View`
   flex-direction: column;
   justify-content: center;
@@ -129,7 +129,59 @@ const EmailRegisterText = styled.Text`
   font-weight: 600;
 `;
 
+const LoginPopup = styled.View`
+  align-items: center;
+  justify-content: center;
+  margin-left: 38px;
+  border-radius: 15px;
+  width: 280px;
+  height: 180px;
+  background-color: white;
+`;
+
+const LoginPopupText = styled.Text`
+  text-align: center;
+  font-size: 16px;
+`;
+
+const PopupBtnWrapper = styled.View`
+  width: 210px;
+  margin-top: 20px;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const LoginPopupBackBtn = styled.TouchableOpacity`
+  width: 95px;
+  height: 42px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LoginPopupBackText = styled.Text``;
+
+const LoginPopupGoodBtn = styled.TouchableOpacity`
+  width: 95px;
+  height: 42px;
+  background-color: ${MAIN_COLOR};
+  border-radius: 20px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LoginPopupGoodText = styled.Text`
+  color: white;
+`;
+
 export default function App() {
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const withOutLoginOnPress = () => {
+    setModalVisible(!isModalVisible);
+  };
+
   useEffect(() => {
     if (SplashScreen) {
       SplashScreen.hide();
@@ -152,8 +204,30 @@ export default function App() {
           <EmailLoginText>이메일 로그인</EmailLoginText>
         </EmailLoginBtn>
         <DivideText>|</DivideText>
-        <NotLoginBtn>
+        <NotLoginBtn onPress={withOutLoginOnPress}>
           <NotLoginText>로그인 없이 계속하기</NotLoginText>
+          <Modal
+            isVisible={isModalVisible}
+            animationIn={"slideInUp"}
+            animationOut={"bounceOutUp"}
+            animationOutTiming={600}
+            useNativeDriver={true}
+            hideModalContentWhileAnimating={true}
+          >
+            <LoginPopup>
+              <LoginPopupText>
+                로그인을 하지 않으면 {"\n"} 데이터가 저장되지 않아요!
+              </LoginPopupText>
+              <PopupBtnWrapper>
+                <LoginPopupBackBtn onPress={withOutLoginOnPress}>
+                  <LoginPopupBackText>돌아갈래요</LoginPopupBackText>
+                </LoginPopupBackBtn>
+                <LoginPopupGoodBtn>
+                  <LoginPopupGoodText>괜찮아요!</LoginPopupGoodText>
+                </LoginPopupGoodBtn>
+              </PopupBtnWrapper>
+            </LoginPopup>
+          </Modal>
         </NotLoginBtn>
       </Wrapper2>
       <NotUser>아직 회원이 아니시라면</NotUser>
