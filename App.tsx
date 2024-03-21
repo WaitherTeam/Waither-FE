@@ -4,9 +4,10 @@ import {StyleSheet, Text, View, Image} from "react-native";
 import SplashScreen from "react-native-splash-screen";
 import Login from "./src/screens/Login";
 import {styled} from "styled-components/native";
-import logo_color3x from "./src/assets/images/waither-logo.png";
+import waitherLogo from "./src/assets/images/waither-logo.png";
+import KakaoLogo from "./src/assets/images/Kakao-logo.png";
+import AppleLogo from "./src/assets/images/Apple-logo.png";
 import {APPLE_LOGIN_COLOR, KAKAO_LOGIN_COLOR} from "./src/styles/color";
-import {Dimensions} from "react-native";
 
 const Wrapper = styled.View`
   flex-direction: column;
@@ -26,6 +27,7 @@ const Logo = styled.Image`
 const KakaoLoginBtn = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
+  flex-direction: row;
   background-color: ${KAKAO_LOGIN_COLOR};
   width: 292px;
   height: 44px;
@@ -36,6 +38,7 @@ const KakaoLoginBtn = styled.TouchableOpacity`
 const AppleLoginBtn = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
+  flex-direction: row;
   background-color: ${APPLE_LOGIN_COLOR};
   width: 292px;
   height: 44px;
@@ -58,6 +61,20 @@ const AppleLoginTitle = styled.Text`
   font-weight: 500;
 `;
 
+const KakaoImage = styled.Image`
+  width: 20px;
+  height: 19px;
+  margin-top: 3px;
+  margin-right: 8px;
+`;
+
+const AppleImage = styled.Image`
+  width: 23px;
+  height: 23px;
+  margin-bottom: 2px;
+  margin-right: 8px;
+`;
+
 export default function App() {
   useEffect(() => {
     if (SplashScreen) {
@@ -66,12 +83,14 @@ export default function App() {
   }, []);
   return (
     <Wrapper>
-      <Logo source={logo_color3x} />
+      <Logo source={waitherLogo} />
       <LoginTitle>로그인</LoginTitle>
       <KakaoLoginBtn>
-        <KaKaoLoginTitle>카카오로그인</KaKaoLoginTitle>
+        <KakaoImage source={KakaoLogo} />
+        <KaKaoLoginTitle>Kakao로 계속하기</KaKaoLoginTitle>
       </KakaoLoginBtn>
       <AppleLoginBtn>
+        <AppleImage source={AppleLogo} />
         <AppleLoginTitle>Apple로 계속하기</AppleLoginTitle>
       </AppleLoginBtn>
     </Wrapper>
