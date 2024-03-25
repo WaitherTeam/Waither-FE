@@ -192,7 +192,7 @@ export default function Login({ navigation }) {
         <AppleLoginTitle>Apple로 계속하기</AppleLoginTitle>
       </AppleLoginBtn>
       <Wrapper2>
-        <EmailLoginBtn>
+        <EmailLoginBtn onPress={() => navigation.navigate('EmailLogin')}>
           <EmailLoginText>이메일 로그인</EmailLoginText>
         </EmailLoginBtn>
         <DivideText>|</DivideText>
