@@ -56,9 +56,19 @@ const PasswordTextForm = styled.TextInput`
   margin-top: 25px;
 `;
 
-const ForgotPassword = styled.Text`
+const ForgotPassword = styled.TouchableOpacity`
+  border-bottom-width: 1px;
+  border-bottom-color: #888888;
+  padding-bottom: 1px;
+`;
+
+const ForgotPasswordIcon = styled.Image``;
+
+const ForgotPasswordText = styled.Text`
   font-size: 15px;
-  margin-top: 30px;
+  margin-top: 20px;
+  color: #979797;
+  font-weight: 800;
 `;
 
 const LoginButton = styled.TouchableOpacity`
@@ -116,7 +126,9 @@ const EmailLogin = () => {
             setIsPress(false);
           }}
         ></PasswordTextForm>
-        <ForgotPassword>비밀번호를 잊으셨다면 ?</ForgotPassword>
+        <ForgotPassword>
+          <ForgotPasswordText>비밀번호를 잊으셨다면 ?</ForgotPasswordText>
+        </ForgotPassword>
       </FormWrapper>
       <LoginButton>
         <LoginButtonText>로그인하기</LoginButtonText>
