@@ -172,6 +172,7 @@ const LoginPopupGoodText = styled.Text`
   color: white;
 `;
 
+// eslint-disable-next-line react/prop-types
 export default function Login({ navigation }) {
   const [isModalVisible, setModalVisible] = useState(false);
 
