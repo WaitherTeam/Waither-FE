@@ -6,7 +6,6 @@ import Databox from '../assets/images/ic-ask-databox.svg';
 import { useNavigation } from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useQueryClient } from '../../node_modules/react-query/es/react/QueryClientProvider';
 
 const Wrapper = styled.View`
   display: flex;
@@ -239,7 +238,7 @@ const Settings = () => {
   const [isCustomServiceEnabled, setIsCustomServiceEnabled] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [forDeclineApiCall, setForDeclineApiCall] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);  
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleSwitch = () => {
     // 이전 상태를 이용
