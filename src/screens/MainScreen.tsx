@@ -318,7 +318,7 @@ const MainScreen: React.FC<Props> = ({ navigation }) => {
   } = useSuspenseQuery({
     queryKey: ['mainData'],
     queryFn: mainWeatherGet,
-    staleTime: 600000,
+    staleTime: 300000,
   });
 
   const {
@@ -330,7 +330,7 @@ const MainScreen: React.FC<Props> = ({ navigation }) => {
   } = useSuspenseQuery({
     queryKey: ['currentLocationData'],
     queryFn: currentLocationGet,
-    staleTime: 600000,
+    staleTime: 300000,
   });
 
   const {
@@ -342,7 +342,7 @@ const MainScreen: React.FC<Props> = ({ navigation }) => {
   } = useSuspenseQuery({
     queryKey: ['reportData'],
     queryFn: reportGet,
-    staleTime: 600000,
+    staleTime: 300000,
   });
 
   useEffect(() => {
