@@ -20,6 +20,12 @@ import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { reportGet } from '../api';
 import { captureRef } from 'react-native-view-shot';
 import { useCameraRoll } from '@react-native-camera-roll/camera-roll';
+import {
+  FormattedDate,
+  refiningAdvice,
+  refiningUserPerception,
+} from '../utils/FormatData/reportFormatData';
+import { getWindDirection } from '../utils/FormatData/mainFormatData';
 
 const Wrapper = styled.View`
   flex-direction: column;
@@ -290,16 +296,6 @@ const PollenSubTextView = styled.View`
 const Report = () => {
   const navigation = useNavigation();
 
-  //-------------날짜 처리-------------------
-  function FormattedDate() {
-    const time = new Date();
-    const year = time.getFullYear();
-    const month = String(time.getMonth() + 1).padStart(2, '0');
-    const day = String(time.getDate()).padStart(2, '0');
-
-    return `${year}년 ${month}월 ${day}일`;
-  }
-
   //-------------scrollview 처리-----------------
   const scrollViewRef = useRef(null); // ScrollView의 ref를 생성합니다.
   const scrollToBottom = () => {
@@ -345,69 +341,6 @@ const Report = () => {
     staleTime: 600000,
   });
 
-  //--------------advice 정제 함수-------------------
-  const removeSpacesAfterDot = (text) => {
-    return text.replace(/\. +/g, '.');
-  };
-
-  const refiningAdvice = () => {
-    var advice = '';
-    //2개의 중요 조언만
-    for (let i = 0; i < 2; i++) {
-      advice += removeSpacesAfterDot(reportData.result.advices[i]);
-    }
-    const adviceArr = advice.split('.');
-    adviceArr.pop();
-    return adviceArr;
-  };
-  //------------userPerception 정제 함수----------------
-  //num을 enum으로 저장해서 관리 -> 유지보수 향상
-  const refiningUserPerception = (num, percent) => {
-    if (num == null) {
-      return '유저들의 답변이 부족합니다.';
-    }
-    if (num == 1) {
-      return `전체 유저의 ${percent}%가\n오늘 날씨를 매우 춥다고 답변했습니다.`;
-    }
-    if (num == 2) {
-      return `전체 유저의 ${percent}%가\n오늘 날씨를 춥다고 답변했습니다.`;
-    }
-    if (num == 3) {
-      return `전체 유저의 ${percent}%가\n오늘 날씨를 보통이라고 답변했습니다.`;
-    }
-    if (num == 4) {
-      return `전체 유저의 ${percent}%가\n오늘 날씨를 덥다고 답변했습니다.`;
-    }
-    if (num == 5) {
-      return `전체 유저의 ${percent}%가\n오늘 날씨를 매우 덥다고 답변했습니다.`;
-    }
-  };
-
-  //------------풍향 각도에 따른 풍향 데이터 처리 함수---------------------------
-  function getWindDirection(degrees) {
-    if (
-      (degrees >= 0 && degrees < 22.5) ||
-      (degrees >= 337.5 && degrees <= 360)
-    ) {
-      return '북'; // North
-    } else if (degrees >= 22.5 && degrees < 67.5) {
-      return '북동'; // Northeast
-    } else if (degrees >= 67.5 && degrees < 112.5) {
-      return '동'; // East
-    } else if (degrees >= 112.5 && degrees < 157.5) {
-      return '남동'; // Southeast
-    } else if (degrees >= 157.5 && degrees < 202.5) {
-      return '남'; // South
-    } else if (degrees >= 202.5 && degrees < 247.5) {
-      return '남서'; // Southwest
-    } else if (degrees >= 247.5 && degrees < 292.5) {
-      return '서'; // West
-    } else if (degrees >= 292.5 && degrees < 337.5) {
-      return '북서'; // Northwest
-    } else {
-      return '잘못된 각도'; // Invalid angle
-    }
-  }
   return (
     <Wrapper ref={viewRef}>
       <LinearGradient
@@ -452,13 +385,15 @@ const Report = () => {
                 style={{ marginTop: 50 }}
               />
               <WeatherMessageView>
-                {refiningAdvice().map((advice, index) => (
-                  <WeatherMessageBoxView key={index}>
-                    <WeatherMessageBox>
-                      <WeatherMessageText>{advice}.</WeatherMessageText>
-                    </WeatherMessageBox>
-                  </WeatherMessageBoxView>
-                ))}
+                {refiningAdvice(reportData.result.advices).map(
+                  (advice, index) => (
+                    <WeatherMessageBoxView key={index}>
+                      <WeatherMessageBox>
+                        <WeatherMessageText>{advice}.</WeatherMessageText>
+                      </WeatherMessageBox>
+                    </WeatherMessageBoxView>
+                  ),
+                )}
               </WeatherMessageView>
             </MessageView>
             <ExplainText>날씨 변화</ExplainText>

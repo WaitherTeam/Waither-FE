@@ -1,8 +1,0 @@
-const authTokens = {
-  accessToken:
-    'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJveXVuQG5hdmVyLmNvbSIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjQyMjcyMzMsImV4cCI6MTcyNDIzMDgzM30.ZFG7BUE3GSSPoSMGyolxcWrQtFSYKyftQ9LWyI_nqT4',
-  refreshToken:
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjA1Nzc5MTAsImV4cCI6MTcyMDY2NDMxMH0.9qnHjePKA9nRzQWmABJva8urHNv4OYRKBzgDmBnppTg',
-};
-
-export default authTokens;

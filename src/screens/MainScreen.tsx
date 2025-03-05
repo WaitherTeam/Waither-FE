@@ -29,7 +29,20 @@ import { userNameState } from '../recoil/userInitInfoRecoil';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { currentLocationGet, mainWeatherGet, reportGet } from '../api';
 import { RefreshControl } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
+import {
+  asTimeBackgroundColor,
+  currentTime,
+  getWindDirection,
+  hourlyWeatherData,
+  hourlyWeatherIcon,
+  isRainy,
+  isWhenRainy,
+  isWhenRainyStop,
+  rainyCheck,
+  refiningMainAdvice,
+} from '../utils/FormatData/mainFormatData';
+import { getLocation } from '../utils/geolocation';
+import { refiningAdvice } from '../utils/FormatData/reportFormatData';
 
 const Wrapper = styled.View`
   flex-direction: column;
@@ -293,15 +306,6 @@ const MainScreen: React.FC<Props> = ({ navigation }) => {
   const [showDust, setShowDust] = useState(false);
   const [wDirection, setWDirection] = useState('');
   const [name, setName] = useRecoilState(userNameState);
-  const [isRainy, setIsRainy] = useState(false);
-  const [isWhenRainy, setIsWhenRainy] = useState(0);
-  const [isWhenRainyStop, setIsWhenRainyStop] = useState(0);
-  const time = new Date();
-  const currentTime = time.getHours() % 24;
-  const [location, setLocation] = useState({
-    latitude: null,
-    longtitude: null,
-  });
 
   //----------------React Query-----------------
   const {
@@ -341,192 +345,9 @@ const MainScreen: React.FC<Props> = ({ navigation }) => {
     staleTime: 600000,
   });
 
-  //---------강수 여부 및 강수 시간 검사 함수------------------------
-  const rainyCheck = () => {
-    let foundFirstRain = false;
-    let foundFirstClear = false;
-
-    for (let i = 0; i < mainData.result.expectedPty.length; i++) {
-      if (!foundFirstRain && mainData.result.expectedPty[i] === '1') {
-        setIsRainy(true);
-        setIsWhenRainy(time.getHours() + i + 1);
-        foundFirstRain = true;
-      } else if (
-        foundFirstRain &&
-        !foundFirstClear &&
-        mainData.result.expectedPty[i] === '0'
-      ) {
-        setIsWhenRainyStop(time.getHours() + i);
-        foundFirstClear = true;
-        break;
-      }
-    }
-  };
-  //------------미래 날씨 예측 컴포넌트 데이터, 아이콘 처리 함수--------------------
-  const hourlyWeatherIcon = (i, time) => {
-    //강수 없음, 구름많음
-    if (
-      mainData.result.expectedPty[i] == 0 &&
-      mainData.result.expectedSky[i] > 1
-    ) {
-      //해가 떠 있을때
-      if (time > 6 && time < 18) {
-        return <CloudyIcon width={48} height={45} />;
-      }
-      //해가 떠 있지 않을때
-      else {
-        return <NightCloudIcon width={48} height={45} />;
-      }
-    }
-
-    //강수 없음, 맑음
-    if (
-      mainData.result.expectedPty[i] == 0 &&
-      mainData.result.expectedSky[i] == 1
-    ) {
-      //해가 떠 있을때
-      if (time > 6 && time < 18) {
-        return <SunnyIcon width={48} height={45} />;
-      }
-      //해가 떠 있지 않을때
-      else {
-        return <NightClearIcon width={48} height={45} />;
-      }
-    }
-    //강수 있음, 맑음
-    if (
-      mainData.result.expectedPty[i] > 0 &&
-      mainData.result.expectedPty[i] != 3 &&
-      mainData.result.expectedPty[i] != 7 &&
-      mainData.result.expectedSky[i] == 1
-    ) {
-      //해가 떠 있을때
-      if (time > 6 && time < 18) {
-        return <ShowerIcon width={48} height={45} />;
-      }
-      //해가 떠 있지 않을때
-      else {
-        return <NightRainIcon width={48} height={45} />;
-      }
-    }
-    //강수 있음, 구름많음
-    if (
-      mainData.result.expectedPty[i] > 0 &&
-      mainData.result.expectedPty[i] != 3 &&
-      mainData.result.expectedPty[i] != 7 &&
-      mainData.result.expectedSky[i] != 1
-    ) {
-      //해가 떠 있을때
-      if (time > 6 && time < 18) {
-        return <RainyCloudyIcon width={48} height={45} />;
-      }
-      //해가 떠 있지 않을때
-      else {
-        return <NightRainIcon width={48} height={45} />;
-      }
-    }
-    //눈 있음
-    if (
-      mainData.result.expectedPty[i] == 3 ||
-      mainData.result.expectedPty[i] == 7
-    ) {
-      //해가 떠 있을때
-      if (time > 6 && time < 18) {
-        return <AfternoonSnowIcon width={48} height={45} />;
-      }
-      //해가 떠 있지 않을때
-      else {
-        return <NightSnowIcon width={48} height={45} />;
-      }
-    }
-  };
-
-  const hourlyWeatherData = [
-    {
-      time: ((time.getHours() + 1) % 24) + '시',
-      icon: hourlyWeatherIcon(0, (time.getHours() + 1) % 24),
-      temperature: mainData.result.expectedTemp[0] + '°C',
-    },
-    {
-      time: ((time.getHours() + 2) % 24) + '시',
-      icon: hourlyWeatherIcon(1, (time.getHours() + 2) % 24),
-      temperature: mainData.result.expectedTemp[1] + '°C',
-    },
-    {
-      time: ((time.getHours() + 3) % 24) + '시',
-      icon: hourlyWeatherIcon(2, (time.getHours() + 3) % 24),
-      temperature: mainData.result.expectedTemp[2] + '°C',
-    },
-    {
-      time: ((time.getHours() + 4) % 24) + '시',
-      icon: hourlyWeatherIcon(3, (time.getHours() + 4) % 24),
-      temperature: mainData.result.expectedTemp[3] + '°C',
-    },
-    {
-      time: ((time.getHours() + 5) % 24) + '시',
-      icon: hourlyWeatherIcon(4, (time.getHours() + 5) % 24),
-      temperature: mainData.result.expectedTemp[4] + '°C',
-    },
-    {
-      time: ((time.getHours() + 6) % 24) + '시',
-      icon: hourlyWeatherIcon(5, (time.getHours() + 6) % 24),
-      temperature: mainData.result.expectedTemp[5] + '°C',
-    },
-  ];
-  //------------풍향 각도에 따른 풍향 데이터 처리 함수---------------------------
-  function getWindDirection(degrees) {
-    if (
-      (degrees >= 0 && degrees < 22.5) ||
-      (degrees >= 337.5 && degrees <= 360)
-    ) {
-      return '북'; // North
-    } else if (degrees >= 22.5 && degrees < 67.5) {
-      return '북동'; // Northeast
-    } else if (degrees >= 67.5 && degrees < 112.5) {
-      return '동'; // East
-    } else if (degrees >= 112.5 && degrees < 157.5) {
-      return '남동'; // Southeast
-    } else if (degrees >= 157.5 && degrees < 202.5) {
-      return '남'; // South
-    } else if (degrees >= 202.5 && degrees < 247.5) {
-      return '남서'; // Southwest
-    } else if (degrees >= 247.5 && degrees < 292.5) {
-      return '서'; // West
-    } else if (degrees >= 292.5 && degrees < 337.5) {
-      return '북서'; // Northwest
-    } else {
-      return '잘못된 각도'; // Invalid angle
-    }
-  }
-  //----------------시간대에 따른 배경 그레디언트 설정 함수----------------
-
-  const asTimeBackgroundColor = () => {
-    const testtime = 22;
-    //낮 시간대
-    if (currentTime >= 6 && currentTime < 15) {
-      return [
-        'rgba(143,169,160, 1)',
-        'rgba(50,127,188, 1)',
-        'rgba(22,115,187, 1)',
-      ];
-    }
-    //노을 시간대
-    if (currentTime >= 15 && currentTime < 18) {
-      return [
-        'rgba(179, 166, 155, 1)',
-        'rgba(110, 131, 149, 1)',
-        'rgba(118, 123, 127, 1)',
-      ];
-    }
-    //밤 시간대
-    else {
-      return ['rgba(114,120,167,1)', 'rgba(23,60,90,1)', 'rgba(16,26,34,1)'];
-    }
-  };
-
   useEffect(() => {
     setWDirection(getWindDirection(mainData.result.windVector));
-    rainyCheck();
+    rainyCheck(mainData.result.expectedPty);
     getLocation();
   }, []);
 
@@ -585,32 +406,11 @@ const MainScreen: React.FC<Props> = ({ navigation }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = async () => {
+    setIsRefreshing(true);
     mainDataRefetch();
     reportDataRefetch();
     isLocationDataRefetch();
-    setIsRefreshing(true);
     setIsRefreshing(false);
-  };
-
-  //-------------------현재 위치 받아오기------------------
-  const getLocation = () => {
-    Geolocation.getCurrentPosition(
-      async (pos) => {
-        setLocation({
-          latitude: pos.coords.latitude,
-          longtitude: pos.coords.longitude,
-        });
-        console.log('스케줄 함수 속 위치 불러오가: ', location);
-      },
-      (error) => {
-        console.log(error);
-      },
-      {
-        enableHighAccuracy: true, //고정밀 위치 설정
-        timeout: 5000, //5초안에 정보 습득 실패 시 재호출
-        maximumAge: 60000, //10분 동안은 캐쉬된 위치 정보 허용
-      },
-    );
   };
 
   return (
@@ -680,7 +480,7 @@ const MainScreen: React.FC<Props> = ({ navigation }) => {
                 <MainAccentText>
                   {reportData.result.advices.length == 1
                     ? '오늘의 날씨는 무난합니다!'
-                    : `${reportData.result.advices[1]}`}
+                    : `${refiningMainAdvice(reportData.result.advices)}`}
                 </MainAccentText>
               </MainAccentTextView>
             </MainAccentView>
@@ -714,7 +514,7 @@ const MainScreen: React.FC<Props> = ({ navigation }) => {
               </MainWeatherInfoView>
               <MainWeatherIconView>
                 {/* 날씨가 맑으며 18시가 지났으면 night 버전 && pop이 50 이상이면 rainy */}
-                {time.getHours() % 24 > 18 ? (
+                {currentTime > 18 ? (
                   mainData.result.pop >= 50 ? (
                     <NightRainIcon />
                   ) : (
@@ -781,15 +581,19 @@ const MainScreen: React.FC<Props> = ({ navigation }) => {
               showsHorizontalScrollIndicator={false}
             >
               <MainWeatherByHourView>
-                {hourlyWeatherData.map((data, index) => (
-                  <MainWeatherByHourColumn key={index}>
-                    <MainWeatherByHourTitle>{data.time}</MainWeatherByHourTitle>
-                    {data.icon}
-                    <MainWeatherByHourTemperature>
-                      {data.temperature}
-                    </MainWeatherByHourTemperature>
-                  </MainWeatherByHourColumn>
-                ))}
+                {hourlyWeatherData(mainData, mainData.result.expectedTemp).map(
+                  (data, index) => (
+                    <MainWeatherByHourColumn key={index}>
+                      <MainWeatherByHourTitle>
+                        {data.time}
+                      </MainWeatherByHourTitle>
+                      {data.icon}
+                      <MainWeatherByHourTemperature>
+                        {data.temperature}
+                      </MainWeatherByHourTemperature>
+                    </MainWeatherByHourColumn>
+                  ),
+                )}
               </MainWeatherByHourView>
             </MainWeatherByHourScrollView>
           </MainInfoView>

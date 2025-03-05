@@ -34,6 +34,7 @@ import BackgroundFetch from 'react-native-background-fetch';
 import Geolocation from 'react-native-geolocation-service';
 import { Platform } from 'react-native';
 import { AppState } from 'react-native';
+import { getLocation } from './src/utils/geolocation';
 
 async function requestPermission() {
   try {
@@ -102,23 +103,7 @@ export default function App() {
           case 'com.transistorsoft.fetch':
             requestPermission().then((result) => {
               if (result === 'granted') {
-                Geolocation.getCurrentPosition(
-                  async (pos) => {
-                    setLocation({
-                      latitude: pos.coords.latitude,
-                      longitude: pos.coords.longitude,
-                    });
-                    console.log('스케줄 함수 속 위치 불러오가: ', location);
-                  },
-                  (error) => {
-                    console.log(error);
-                  },
-                  {
-                    enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 60000,
-                  },
-                );
+                getLocation();
               }
             });
             console.log('사용자 위치 전송, 백그라운드 성공');
